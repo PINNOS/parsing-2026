@@ -1,0 +1,172 @@
+{
+  "name": "lab3_v6_jsonplaceholder_comments",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "hours",
+              "hoursInterval": 24
+            }
+          ]
+        }
+      },
+      "id": "n-schedule",
+      "name": "Расписание (24 ч)",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [180, 240]
+    },
+    {
+      "parameters": {},
+      "id": "n-manual",
+      "name": "Ручной запуск",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [180, 400]
+    },
+    {
+      "parameters": {
+        "url": "https://jsonplaceholder.typicode.com/comments",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "_page",
+              "value": "1"
+            },
+            {
+              "name": "_limit",
+              "value": "100"
+            }
+          ]
+        },
+        "options": {
+          "timeout": 20000
+        }
+      },
+      "id": "n-http",
+      "name": "HTTP Request — /comments (стр. 1)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [420, 320],
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 2000,
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Пагинация: получаем страницы 2..6 с паузой 400 мс и лимитами\nconst LIMIT = 100;\nconst MAX_PAGES = 6;\nconst BASE = 'https://jsonplaceholder.typicode.com/comments';\nconst UA = 'StudentScraperBot/1.0 (+https://github.com/PINNOS/parsing)';\n\nconst collected = [];\nfor (const item of $input.all()) {\n  if (item.json && item.json.id !== undefined) collected.push(item.json);\n}\n\nlet page = 2;\nwhile (page <= MAX_PAGES) {\n  let resp = null;\n  let attempt = 0;\n  while (true) {\n    attempt++;\n    try {\n      resp = await this.helpers.httpRequest({\n        url: BASE + '?_page=' + page + '&_limit=' + LIMIT,\n        method: 'GET',\n        json: true,\n        timeout: 20000,\n        headers: { 'User-Agent': UA, Accept: 'application/json' }\n      });\n      break;\n    } catch (e) {\n      const status = (e && (e.statusCode || e.httpCode || e.response?.status)) || 0;\n      const retryable = status === 429 || status >= 500 || status === 0;\n      if (!retryable || attempt >= 4) throw e;\n      const delay = Math.min(8000, 500 * Math.pow(2, attempt - 1));\n      await new Promise((r) => setTimeout(r, delay * (0.5 + Math.random() * 0.5)));\n    }\n  }\n  if (!Array.isArray(resp) || resp.length === 0) break;\n  for (const r of resp) collected.push(r);\n  if (resp.length < LIMIT) break;\n  page++;\n  await new Promise((r) => setTimeout(r, 400));\n}\n\nif (collected.length < 300) {\n  throw new Error('Собрано меньше 300 записей: ' + collected.length);\n}\nreturn collected.map((r) => ({ json: r }));"
+      },
+      "id": "n-paged",
+      "name": "Пагинация страниц 2..6 (цикл + пауза)",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [640, 320],
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Нормализация полей (переименование, типизация, вычисляемые) и дедупликация по comment_id\nconst seen = new Set();\nconst out = [];\nfor (const item of $input.all()) {\n  const r = item.json;\n  if (!r || r.id === undefined) continue;\n  const id = Number(r.id);\n  if (seen.has(id)) continue;\n  seen.add(id);\n  const email = String(r.email || '');\n  const at = email.indexOf('@');\n  const masked = at > 1 ? email[0] + '***' + email.slice(at) : email;\n  out.push({\n    json: {\n      comment_id: id,\n      post_id: Number(r.postId),\n      author_email_masked: masked,\n      comment_len: String(r.body || '').length,\n      collected_at: new Date().toISOString()\n    }\n  });\n}\nif (out.length === 0) throw new Error('После нормализации не осталось валидных записей');\nreturn out;"
+      },
+      "id": "n-normalize",
+      "name": "Нормализация и дедупликация",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [860, 320]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Выгрузка: собираем CSV и отдаём бинарный файл\nconst rows = $input.all().map((i) => i.json);\nif (rows.length === 0) throw new Error('Нет данных для выгрузки CSV');\nconst headers = Object.keys(rows[0]);\nconst esc = (v) => '\"' + String(v === null || v === undefined ? '' : v).replace(/\"/g, '\"\"') + '\"';\nconst csv = [headers.join(',')]\n  .concat(rows.map((r) => headers.map((h) => esc(r[h])).join(',')))\n  .join('\\n');\nreturn [{\n  json: { rows: rows.length, columns: headers.length, file: 'nocode_result.csv' },\n  binary: {\n    data: {\n      data: Buffer.from(csv, 'utf8').toString('base64'),\n      mimeType: 'text/csv',\n      fileName: 'nocode_result.csv'\n    }\n  }\n}];"
+      },
+      "id": "n-tocsv",
+      "name": "Формирование CSV",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1080, 320]
+    },
+    {
+      "parameters": {
+        "operation": "write",
+        "fileName": "/data/nocode/nocode_result.csv",
+        "options": {}
+      },
+      "id": "n-write",
+      "name": "Запись nocode_result.csv",
+      "type": "n8n-nodes-base.readWriteFile",
+      "typeVersion": 1,
+      "position": [1300, 320]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Ветка ошибки: фиксируем инцидент сбора\nreturn $input.all().map((i) => ({\n  json: {\n    ts: new Date().toISOString(),\n    source: 'jsonplaceholder.comments',\n    status: 'error',\n    detail: JSON.stringify(i.json || {}).slice(0, 300)\n  }\n}));"
+      },
+      "id": "n-errorlog",
+      "name": "Ветка ошибки: инцидент",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [640, 540]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Формируем CSV-файл журнала ошибок\nconst rows = $input.all().map((i) => i.json);\nconst headers = ['ts', 'source', 'status', 'detail'];\nconst esc = (v) => '\"' + String(v === null || v === undefined ? '' : v).replace(/\"/g, '\"\"') + '\"';\nconst csv = [headers.join(',')]\n  .concat(rows.map((r) => headers.map((h) => esc(r[h])).join(',')))\n  .join('\\n');\nreturn [{\n  json: { rows: rows.length },\n  binary: {\n    data: {\n      data: Buffer.from(csv, 'utf8').toString('base64'),\n      mimeType: 'text/csv',\n      fileName: 'nocode_errors.csv'\n    }\n  }\n}];"
+      },
+      "id": "n-errcsv",
+      "name": "Формирование CSV ошибок",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [860, 540]
+    },
+    {
+      "parameters": {
+        "operation": "write",
+        "fileName": "/data/nocode/nocode_errors.csv",
+        "options": {
+          "append": true
+        }
+      },
+      "id": "n-writeerr",
+      "name": "Запись журнала ошибок",
+      "type": "n8n-nodes-base.readWriteFile",
+      "typeVersion": 1,
+      "position": [1080, 540]
+    }
+  ],
+  "connections": {
+    "Расписание (24 ч)": {
+      "main": [[{ "node": "HTTP Request — /comments (стр. 1)", "type": "main", "index": 0 }]]
+    },
+    "Ручной запуск": {
+      "main": [[{ "node": "HTTP Request — /comments (стр. 1)", "type": "main", "index": 0 }]]
+    },
+    "HTTP Request — /comments (стр. 1)": {
+      "main": [
+        [{ "node": "Пагинация страниц 2..6 (цикл + пауза)", "type": "main", "index": 0 }],
+        [{ "node": "Ветка ошибки: инцидент", "type": "main", "index": 0 }]
+      ]
+    },
+    "Пагинация страниц 2..6 (цикл + пауза)": {
+      "main": [
+        [{ "node": "Нормализация и дедупликация", "type": "main", "index": 0 }],
+        [{ "node": "Ветка ошибки: инцидент", "type": "main", "index": 0 }]
+      ]
+    },
+    "Нормализация и дедупликация": {
+      "main": [[{ "node": "Формирование CSV", "type": "main", "index": 0 }]]
+    },
+    "Формирование CSV": {
+      "main": [[{ "node": "Запись nocode_result.csv", "type": "main", "index": 0 }]]
+    },
+    "Ветка ошибки: инцидент": {
+      "main": [[{ "node": "Формирование CSV ошибок", "type": "main", "index": 0 }]]
+    },
+    "Формирование CSV ошибок": {
+      "main": [[{ "node": "Запись журнала ошибок", "type": "main", "index": 0 }]]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  }
+}

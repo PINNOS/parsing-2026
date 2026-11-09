@@ -1,0 +1,62 @@
+{
+  "name": "books.toscrape.com - list extraction (Lab 2 Part B)",
+  "description": "Extract title price rating URL category data_id with pagination Next",
+  "version": "1.0",
+  "target": "https://books.toscrape.com/",
+  "strategy": {
+    "loop_type": "list",
+    "container_selector": "article.product_pod",
+    "pagination": "li.next > a",
+    "pagination_type": "click_or_follow",
+    "wait_before_action": 1000,
+    "wait_after_page": 500,
+    "retries": 3,
+    "timeout_ms": 10000
+  },
+  "fields": [
+    {
+      "name": "title",
+      "selector": "h3 > a",
+      "attribute": "title|text"
+    },
+    {
+      "name": "url",
+      "selector": "h3 > a",
+      "attribute": "href",
+      "absolute": true
+    },
+    {
+      "name": "price",
+      "selector": "p.price_color",
+      "attribute": "text"
+    },
+    {
+      "name": "rating",
+      "selector": "p.star-rating",
+      "attribute": "class"
+    },
+    {
+      "name": "data_id",
+      "selector": "article.product_pod",
+      "attribute": "data-id|data-item-id|data-book-id|url_extract",
+      "url_pattern": "_(\\d+)/index\\.html"
+    },
+    {
+      "name": "category",
+      "selector": "detail:ul.breadcrumb > li:nth-child(3) > a",
+      "attribute": "text",
+      "from_detail": true
+    }
+  ],
+  "export": {
+    "format": "csv",
+    "filename": "nocode_result.csv",
+    "encoding": "utf-8-sig"
+  },
+  "notes": [
+    "loop item article.product_pod",
+    "Next li.next > a",
+    "category from detail page breadcrumbs",
+    "id fallback from URL slug _NNN/index.html"
+  ]
+}

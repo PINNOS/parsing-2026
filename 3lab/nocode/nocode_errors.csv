@@ -1,0 +1,2 @@
+ts,source,status,detail
+"2026-10-17T14:21:16.404Z","jsonplaceholder.comments","error","{""error"":{""message"":""timeout of 20000ms exceeded"",""name"":""AxiosError"",""stack"":""AxiosError: timeout of 20000ms exceeded\n    at createTimeoutError (/usr/local/lib/node_modules/n8n/node_modules/.pnpm/axios@1.20.0_debug@4.4.3_supports-color@8.1.1__supports-color@8.1.1/node_modules/axios/dist/node/axios"

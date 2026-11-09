@@ -1,0 +1,24 @@
+{
+  "workflow_file": "nocode/workflow.json",
+  "workflow_name": "3lab v6 — JSONPlaceholder comments → CSV (пагинация + ветка ошибки)",
+  "n8n_instance": "http://localhost:5678 (docker container n8n-parsing-lab)",
+  "workflow_id": "fjepUtgZx5baxK7A",
+  "trigger": "Расписание (24 ч) + Ручной запуск",
+  "records": 500,
+  "requests": 5,
+  "max_pages": 6,
+  "execution_seconds": 4.2,
+  "execution_seconds_note": "сумма времени узлов из ответа n8n execute (CLI-запуск целиком ~7.8 с с учётом старта процесса)",
+  "result_file": "nocode/nocode_result.csv (500 строк + заголовок)",
+  "error_branch_test": {
+    "workflow_id": "jnj9vLEicqtwN7mI",
+    "scenario": "запрос к несуществующему ресурсу /comments-404",
+    "result_file": "nocode/nocode_errors.csv",
+    "observed": "3 попытки Retry On Fail, затем маршрутизация в ветку ошибки и запись инцидента"
+  },
+  "dev_time_python_min": 180,
+  "dev_time_nocode_min": 75,
+  "dev_time_note": "оценка трудозатрат: код — реализация сессии, пагинации, повторов, контракта и выгрузок; n8n — сборка 8 узлов без программирования",
+  "import_command": "docker exec n8n-parsing-lab n8n import:workflow --input=/data/nocode/workflow.json",
+  "run_command": "docker exec -e N8N_RUNNERS_BROKER_PORT=5699 -e N8N_RESTRICT_FILE_ACCESS_TO=/data -e N8N_BLOCK_FILE_ACCESS_TO_N8N_FILES=false n8n-parsing-lab n8n execute --id=<workflow-id>"
+}
