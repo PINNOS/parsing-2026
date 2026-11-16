@@ -1,0 +1,13 @@
+{
+  "browser_unique": 227,
+  "light_unique": 227,
+  "matched_by_business_key": 227,
+  "only_browser": 0,
+  "only_light": 0,
+  "name_mismatch": 0,
+  "price_mismatch_numeric": 0,
+  "url_mismatch": 0,
+  "examples_only_browser": [],
+  "examples_only_light": [],
+  "examples_url_mismatch": []
+}

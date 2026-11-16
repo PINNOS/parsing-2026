@@ -1,0 +1,41 @@
+{"ts": "2026-10-17T14:50:47+00:00", "run_id": "9d7226bc", "event": "http", "url": "https://www.scrapingcourse.com/ajax/products?offset=0", "status": 200, "attempt": 1, "bytes": 10185, "ms": 783}
+{"ts": "2026-10-17T14:50:47+00:00", "run_id": "9d7226bc", "event": "page", "source": "load_more", "offset": 0, "cards": 12}
+{"ts": "2026-10-17T14:50:49+00:00", "run_id": "9d7226bc", "event": "http", "url": "https://www.scrapingcourse.com/ajax/products?offset=10", "status": 200, "attempt": 1, "bytes": 10302, "ms": 225}
+{"ts": "2026-10-17T14:50:49+00:00", "run_id": "9d7226bc", "event": "page", "source": "load_more", "offset": 10, "cards": 12}
+{"ts": "2026-10-17T14:50:50+00:00", "run_id": "9d7226bc", "event": "http", "url": "https://www.scrapingcourse.com/ajax/products?offset=20", "status": 200, "attempt": 1, "bytes": 10277, "ms": 215}
+{"ts": "2026-10-17T14:50:50+00:00", "run_id": "9d7226bc", "event": "page", "source": "load_more", "offset": 20, "cards": 12}
+{"ts": "2026-10-17T14:50:51+00:00", "run_id": "9d7226bc", "event": "http", "url": "https://www.scrapingcourse.com/ajax/products?offset=30", "status": 200, "attempt": 1, "bytes": 10221, "ms": 315}
+{"ts": "2026-10-17T14:50:51+00:00", "run_id": "9d7226bc", "event": "page", "source": "load_more", "offset": 30, "cards": 12}
+{"ts": "2026-10-17T14:50:52+00:00", "run_id": "9d7226bc", "event": "http", "url": "https://www.scrapingcourse.com/ajax/products?offset=40", "status": 200, "attempt": 1, "bytes": 10485, "ms": 223}
+{"ts": "2026-10-17T14:50:52+00:00", "run_id": "9d7226bc", "event": "page", "source": "load_more", "offset": 40, "cards": 12}
+{"ts": "2026-10-17T14:50:54+00:00", "run_id": "9d7226bc", "event": "http", "url": "https://www.scrapingcourse.com/ajax/products?offset=50", "status": 200, "attempt": 1, "bytes": 10157, "ms": 246}
+{"ts": "2026-10-17T14:50:54+00:00", "run_id": "9d7226bc", "event": "page", "source": "load_more", "offset": 50, "cards": 12}
+{"ts": "2026-10-17T14:50:55+00:00", "run_id": "9d7226bc", "event": "http", "url": "https://www.scrapingcourse.com/ajax/products?offset=60", "status": 200, "attempt": 1, "bytes": 10196, "ms": 198}
+{"ts": "2026-10-17T14:50:55+00:00", "run_id": "9d7226bc", "event": "page", "source": "load_more", "offset": 60, "cards": 12}
+{"ts": "2026-10-17T14:50:56+00:00", "run_id": "9d7226bc", "event": "http", "url": "https://www.scrapingcourse.com/ajax/products?offset=70", "status": 200, "attempt": 1, "bytes": 10118, "ms": 274}
+{"ts": "2026-10-17T14:50:56+00:00", "run_id": "9d7226bc", "event": "page", "source": "load_more", "offset": 70, "cards": 12}
+{"ts": "2026-10-17T14:50:57+00:00", "run_id": "9d7226bc", "event": "http", "url": "https://www.scrapingcourse.com/ajax/products?offset=80", "status": 200, "attempt": 1, "bytes": 10203, "ms": 205}
+{"ts": "2026-10-17T14:50:57+00:00", "run_id": "9d7226bc", "event": "page", "source": "load_more", "offset": 80, "cards": 12}
+{"ts": "2026-10-17T14:50:59+00:00", "run_id": "9d7226bc", "event": "http", "url": "https://www.scrapingcourse.com/ajax/products?offset=90", "status": 200, "attempt": 1, "bytes": 10147, "ms": 200}
+{"ts": "2026-10-17T14:50:59+00:00", "run_id": "9d7226bc", "event": "page", "source": "load_more", "offset": 90, "cards": 12}
+{"ts": "2026-10-17T14:51:00+00:00", "run_id": "9d7226bc", "event": "http", "url": "https://www.scrapingcourse.com/ajax/products?offset=100", "status": 200, "attempt": 1, "bytes": 10024, "ms": 251}
+{"ts": "2026-10-17T14:51:00+00:00", "run_id": "9d7226bc", "event": "page", "source": "load_more", "offset": 100, "cards": 12}
+{"ts": "2026-10-17T14:51:01+00:00", "run_id": "9d7226bc", "event": "http", "url": "https://www.scrapingcourse.com/ajax/products?offset=110", "status": 200, "attempt": 1, "bytes": 10157, "ms": 230}
+{"ts": "2026-10-17T14:51:01+00:00", "run_id": "9d7226bc", "event": "page", "source": "load_more", "offset": 110, "cards": 12}
+{"ts": "2026-10-17T14:51:02+00:00", "run_id": "9d7226bc", "event": "http", "url": "https://www.scrapingcourse.com/ajax/products?offset=120", "status": 200, "attempt": 1, "bytes": 10178, "ms": 323}
+{"ts": "2026-10-17T14:51:02+00:00", "run_id": "9d7226bc", "event": "page", "source": "load_more", "offset": 120, "cards": 12}
+{"ts": "2026-10-17T14:51:04+00:00", "run_id": "9d7226bc", "event": "http", "url": "https://www.scrapingcourse.com/ajax/products?offset=130", "status": 200, "attempt": 1, "bytes": 10093, "ms": 231}
+{"ts": "2026-10-17T14:51:04+00:00", "run_id": "9d7226bc", "event": "page", "source": "load_more", "offset": 130, "cards": 12}
+{"ts": "2026-10-17T14:51:05+00:00", "run_id": "9d7226bc", "event": "http", "url": "https://www.scrapingcourse.com/ajax/products?offset=140", "status": 200, "attempt": 1, "bytes": 5835, "ms": 219}
+{"ts": "2026-10-17T14:51:05+00:00", "run_id": "9d7226bc", "event": "page", "source": "load_more", "offset": 140, "cards": 7}
+{"ts": "2026-10-17T14:51:06+00:00", "run_id": "9d7226bc", "event": "http", "url": "https://www.scrapingcourse.com/ajax/products?offset=150", "status": 204, "attempt": 1, "bytes": 0, "ms": 190}
+{"ts": "2026-10-17T14:51:06+00:00", "run_id": "9d7226bc", "event": "stop", "source": "load_more", "reason": "status 204"}
+{"ts": "2026-10-17T14:51:07+00:00", "run_id": "9d7226bc", "event": "http", "url": "https://books.toscrape.com/", "status": 200, "attempt": 1, "bytes": 51294, "ms": 810}
+{"ts": "2026-10-17T14:51:07+00:00", "run_id": "9d7226bc", "event": "page", "source": "books", "page": 1, "cards": 20}
+{"ts": "2026-10-17T14:51:08+00:00", "run_id": "9d7226bc", "event": "http", "url": "https://books.toscrape.com/catalogue/page-2.html", "status": 200, "attempt": 1, "bytes": 50877, "ms": 280}
+{"ts": "2026-10-17T14:51:08+00:00", "run_id": "9d7226bc", "event": "page", "source": "books", "page": 2, "cards": 20}
+{"ts": "2026-10-17T14:51:10+00:00", "run_id": "9d7226bc", "event": "http", "url": "https://books.toscrape.com/catalogue/page-3.html", "status": 200, "attempt": 1, "bytes": 51374, "ms": 283}
+{"ts": "2026-10-17T14:51:10+00:00", "run_id": "9d7226bc", "event": "page", "source": "books", "page": 3, "cards": 20}
+{"ts": "2026-10-17T14:51:11+00:00", "run_id": "9d7226bc", "event": "http", "url": "https://books.toscrape.com/catalogue/page-4.html", "status": 200, "attempt": 1, "bytes": 52524, "ms": 281}
+{"ts": "2026-10-17T14:51:11+00:00", "run_id": "9d7226bc", "event": "page", "source": "books", "page": 4, "cards": 20}
+{"ts": "2026-10-17T14:51:12+00:00", "run_id": "9d7226bc", "event": "summary", "mode": "light", "records_unique": 227, "records_raw": 255, "by_source": {"load_more": 147, "books": 80}, "requests": 20, "retries": 0, "traffic_mb": 0.338, "elapsed_s": 25.17, "sec_per_record": 0.1109, "peak_rss_mb": 44.2, "reconcile": {"matched_by_business_key": 227, "only_browser": 0, "only_light": 0, "name_mismatch": 0, "price_mismatch_numeric": 0, "url_mismatch": 0}, "exit_code": 0}

@@ -1,0 +1,20 @@
+{
+  "mode": "blocked",
+  "run_id": "7f0c682f",
+  "records_unique": 227,
+  "records_raw": 255,
+  "by_source": {
+    "load_more": 147,
+    "books": 80
+  },
+  "cycles": 19,
+  "network_responses": 69,
+  "ajax_responses": 15,
+  "traffic_mb": 0.03,
+  "blocked_requests": 288,
+  "elapsed_s": 29.38,
+  "sec_per_record": 0.1294,
+  "peak_rss_mb": 440.5,
+  "failed": null,
+  "exit_code": 0
+}

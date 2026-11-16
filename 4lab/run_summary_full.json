@@ -1,0 +1,20 @@
+{
+  "mode": "full",
+  "run_id": "967264cb",
+  "records_unique": 227,
+  "records_raw": 255,
+  "by_source": {
+    "load_more": 147,
+    "books": 80
+  },
+  "cycles": 19,
+  "network_responses": 322,
+  "ajax_responses": 15,
+  "traffic_mb": 13.741,
+  "blocked_requests": 0,
+  "elapsed_s": 28.49,
+  "sec_per_record": 0.1255,
+  "peak_rss_mb": 977.0,
+  "failed": null,
+  "exit_code": 0
+}

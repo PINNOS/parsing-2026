@@ -1,0 +1,33 @@
+{
+  "run_id": "d2_jobdir_resume",
+  "spider": "books",
+  "reason": "finished",
+  "elapsed_s": 3.91,
+  "stats": {
+    "start_time": "2026-10-19T11:52:40.802548+00:00",
+    "log_count/INFO": 4,
+    "scheduler/enqueued/disk": 1,
+    "scheduler/enqueued": 1,
+    "scheduler/dequeued/disk": 8,
+    "scheduler/dequeued": 8,
+    "downloader/request_count": 9,
+    "downloader/request_method_count/GET": 9,
+    "downloader/request_bytes": 3374,
+    "downloader/response_count": 9,
+    "downloader/response_status_count/404": 1,
+    "downloader/response_bytes": 29039,
+    "httpcompression/response_bytes": 151397,
+    "httpcompression/response_count": 9,
+    "log_count/DEBUG": 46,
+    "response_received_count": 9,
+    "robotstxt/response_count": 1,
+    "robotstxt/response_status_count/404": 1,
+    "robotstxt/request_count": 1,
+    "downloader/response_status_count/200": 8,
+    "item_scraped_count": 7,
+    "request_depth_max": 1,
+    "dupefilter/filtered": 21,
+    "stored/rows": 7,
+    "stored/flushes": 1
+  }
+}

@@ -1,0 +1,4 @@
+{"product_key":"feb7cc7701ecf901","title":"Olio","price_raw":"Цена по запросу","in_stock_raw":"In stock (19 available)","_source":"scrapy.books","reject_reason":"пропуск обязательного поля"}
+{"product_key":"e30f54cea9b38190","title":null,"price_raw":37.59,"in_stock_raw":"In stock (19 available)","_source":"scrapy.books","reject_reason":"пропуск обязательного поля"}
+{"product_key":"3b1c02bac2a429e6","title":"Scott Pilgrim's Precious Little Life (Scott Pilgrim #1)","price_raw":-12.0,"in_stock_raw":"In stock (19 available)","_source":"scrapy.books","reject_reason":"нарушение бизнес-правила"}
+{"product_key":"a34ba96d4081e6a4","title":"Rip it Up and Start Again","price_raw":35.02,"in_stock_raw":"In stock (19 available)","_source":"scrapy.books","reject_reason":"нарушение бизнес-правила"}

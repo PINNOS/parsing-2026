@@ -1,0 +1,46 @@
+[
+  {
+    "dataset": "data_browser.csv",
+    "records": 227,
+    "fields": {
+      "name": {
+        "empty": 0,
+        "empty_share": 0.0
+      },
+      "price": {
+        "empty": 0,
+        "empty_share": 0.0
+      },
+      "url": {
+        "empty": 0,
+        "empty_share": 0.0
+      }
+    },
+    "warnings": [],
+    "duplicate_keys_by_name": 0,
+    "price_not_numeric": 0,
+    "verdict": "green"
+  },
+  {
+    "dataset": "data_light.csv",
+    "records": 227,
+    "fields": {
+      "name": {
+        "empty": 0,
+        "empty_share": 0.0
+      },
+      "price": {
+        "empty": 0,
+        "empty_share": 0.0
+      },
+      "url": {
+        "empty": 0,
+        "empty_share": 0.0
+      }
+    },
+    "warnings": [],
+    "duplicate_keys_by_name": 0,
+    "price_not_numeric": 0,
+    "verdict": "green"
+  }
+]

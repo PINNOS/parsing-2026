@@ -1,0 +1,23 @@
+{"ts": "2026-10-17T14:50:19+00:00", "run_id": "7f0c682f", "event": "start", "source": "load_more", "initial_cards": 12}
+{"ts": "2026-10-17T14:50:19+00:00", "run_id": "7f0c682f", "event": "cycle", "source": "load_more", "cycle": 1, "elements": 24, "delta": 12, "http_status": 200}
+{"ts": "2026-10-17T14:50:21+00:00", "run_id": "7f0c682f", "event": "cycle", "source": "load_more", "cycle": 2, "elements": 36, "delta": 12, "http_status": 200}
+{"ts": "2026-10-17T14:50:22+00:00", "run_id": "7f0c682f", "event": "cycle", "source": "load_more", "cycle": 3, "elements": 48, "delta": 12, "http_status": 200}
+{"ts": "2026-10-17T14:50:23+00:00", "run_id": "7f0c682f", "event": "cycle", "source": "load_more", "cycle": 4, "elements": 60, "delta": 12, "http_status": 200}
+{"ts": "2026-10-17T14:50:24+00:00", "run_id": "7f0c682f", "event": "cycle", "source": "load_more", "cycle": 5, "elements": 72, "delta": 12, "http_status": 200}
+{"ts": "2026-10-17T14:50:26+00:00", "run_id": "7f0c682f", "event": "cycle", "source": "load_more", "cycle": 6, "elements": 84, "delta": 12, "http_status": 200}
+{"ts": "2026-10-17T14:50:27+00:00", "run_id": "7f0c682f", "event": "cycle", "source": "load_more", "cycle": 7, "elements": 96, "delta": 12, "http_status": 200}
+{"ts": "2026-10-17T14:50:28+00:00", "run_id": "7f0c682f", "event": "cycle", "source": "load_more", "cycle": 8, "elements": 108, "delta": 12, "http_status": 200}
+{"ts": "2026-10-17T14:50:29+00:00", "run_id": "7f0c682f", "event": "cycle", "source": "load_more", "cycle": 9, "elements": 120, "delta": 12, "http_status": 200}
+{"ts": "2026-10-17T14:50:31+00:00", "run_id": "7f0c682f", "event": "cycle", "source": "load_more", "cycle": 10, "elements": 132, "delta": 12, "http_status": 200}
+{"ts": "2026-10-17T14:50:32+00:00", "run_id": "7f0c682f", "event": "cycle", "source": "load_more", "cycle": 11, "elements": 144, "delta": 12, "http_status": 200}
+{"ts": "2026-10-17T14:50:33+00:00", "run_id": "7f0c682f", "event": "cycle", "source": "load_more", "cycle": 12, "elements": 156, "delta": 12, "http_status": 200}
+{"ts": "2026-10-17T14:50:35+00:00", "run_id": "7f0c682f", "event": "cycle", "source": "load_more", "cycle": 13, "elements": 168, "delta": 12, "http_status": 200}
+{"ts": "2026-10-17T14:50:36+00:00", "run_id": "7f0c682f", "event": "cycle", "source": "load_more", "cycle": 14, "elements": 175, "delta": 7, "http_status": 200}
+{"ts": "2026-10-17T14:50:37+00:00", "run_id": "7f0c682f", "event": "cycle", "source": "load_more", "cycle": 15, "elements": 175, "delta": 0, "http_status": 204}
+{"ts": "2026-10-17T14:50:38+00:00", "run_id": "7f0c682f", "event": "end_of_source", "source": "load_more", "cycle": 16}
+{"ts": "2026-10-17T14:50:39+00:00", "run_id": "7f0c682f", "event": "cycle", "source": "books", "cycle": 1, "elements": 20, "page_url": "https://books.toscrape.com/"}
+{"ts": "2026-10-17T14:50:41+00:00", "run_id": "7f0c682f", "event": "cycle", "source": "books", "cycle": 2, "elements": 20, "page_url": "https://books.toscrape.com/catalogue/page-2.html"}
+{"ts": "2026-10-17T14:50:43+00:00", "run_id": "7f0c682f", "event": "cycle", "source": "books", "cycle": 3, "elements": 20, "page_url": "https://books.toscrape.com/catalogue/page-3.html"}
+{"ts": "2026-10-17T14:50:45+00:00", "run_id": "7f0c682f", "event": "cycle", "source": "books", "cycle": 4, "elements": 20, "page_url": "https://books.toscrape.com/catalogue/page-4.html"}
+{"ts": "2026-10-17T14:50:46+00:00", "run_id": "7f0c682f", "event": "limit_pages", "source": "books", "max_pages": 4}
+{"ts": "2026-10-17T14:50:46+00:00", "run_id": "7f0c682f", "event": "summary", "mode": "blocked", "records_unique": 227, "records_raw": 255, "by_source": {"load_more": 147, "books": 80}, "cycles": 19, "network_responses": 69, "ajax_responses": 15, "traffic_mb": 0.03, "blocked_requests": 288, "elapsed_s": 29.38, "sec_per_record": 0.1294, "peak_rss_mb": 440.5, "failed": null, "exit_code": 0}

@@ -1,0 +1,517 @@
+{
+  "name": "Lab 5 Books Pipeline",
+  "nodes": [
+    {
+      "id": "3f841d7a-e816-4bd5-8522-bf4195d4667c",
+      "name": "Daily Schedule",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.4,
+      "position": [0, 128],
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "days",
+              "daysInterval": 1,
+              "triggerAtHour": 6
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "f3a5d60d-3a93-4224-9cb6-cb753c65e844",
+      "name": "Build Page URLs",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [224, 320],
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "language": "javaScript",
+        "jsCode": "return [1, 2].map(p => ({ json: { page: p, url: 'https://books.toscrape.com/catalogue/page-' + p + '.html' } }));"
+      }
+    },
+    {
+      "id": "1dee3638-b31d-4339-8db2-d130e6cb7147",
+      "name": "Manual Start",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [0, 320],
+      "parameters": {}
+    },
+    {
+      "id": "adb62dcf-8bfc-419c-9e6d-794239884993",
+      "name": "Extract Book Links",
+      "type": "n8n-nodes-base.html",
+      "typeVersion": 1.2,
+      "position": [672, 176],
+      "parameters": {
+        "operation": "extractHtmlContent",
+        "sourceData": "json",
+        "extractionValues": {
+          "values": [
+            {
+              "key": "href",
+              "cssSelector": "article.product_pod h3 a",
+              "returnValue": "attribute",
+              "attribute": "href",
+              "returnArray": true
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "8ec9eac2-29df-49d2-ae83-0634417a4cb0",
+      "name": "Split Book Links",
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1.1,
+      "position": [896, 176],
+      "parameters": {
+        "fieldToSplitOut": "href",
+        "include": "noOtherFields"
+      }
+    },
+    {
+      "id": "c7685ac7-0e00-4a78-89c2-61b38137af88",
+      "name": "Absolute URL",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [1120, 176],
+      "parameters": {
+        "mode": "manual",
+        "includeOtherFields": false,
+        "assignments": {
+          "assignments": [
+            {
+              "id": "u1",
+              "name": "url",
+              "value": "=https://books.toscrape.com/catalogue/{{ $json.href.replace('../', '') }}",
+              "type": "string"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "96f7288c-981b-4aff-9176-403aaa10a3da",
+      "name": "Limit 30 Books",
+      "type": "n8n-nodes-base.limit",
+      "typeVersion": 1,
+      "position": [1344, 176],
+      "parameters": {
+        "maxItems": 30,
+        "keep": "firstItems"
+      }
+    },
+    {
+      "id": "5464d6c7-f22c-472a-ab60-77317821aef6",
+      "name": "Extract Book Fields",
+      "type": "n8n-nodes-base.html",
+      "typeVersion": 1.2,
+      "position": [1792, 0],
+      "parameters": {
+        "operation": "extractHtmlContent",
+        "sourceData": "json",
+        "extractionValues": {
+          "values": [
+            {
+              "key": "title",
+              "cssSelector": "div.product_main h1",
+              "returnValue": "text"
+            },
+            {
+              "key": "price_text",
+              "cssSelector": "p.price_color",
+              "returnValue": "text"
+            },
+            {
+              "key": "availability_text",
+              "cssSelector": "p.instock.availability",
+              "returnValue": "text"
+            },
+            {
+              "key": "table_values",
+              "cssSelector": "table.table-striped td",
+              "returnValue": "text",
+              "returnArray": true
+            },
+            {
+              "key": "category",
+              "cssSelector": "ul.breadcrumb a[href*='/category/books/']",
+              "returnValue": "text"
+            },
+            {
+              "key": "description",
+              "cssSelector": "#product_description + p",
+              "returnValue": "text"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "8d9cbbc6-1fb0-4b68-b684-571513085127",
+      "name": "Normalize Book",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [2016, 0],
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "language": "javaScript",
+        "jsCode": "const v = $json.table_values; const num = s => parseFloat(String(s).replace(/[^0-9.]/g, '')); const avail = $json.availability_text || ''; const m = avail.match(/[(]([0-9]+) available[)]/); return { json: { upc: v[0], title: $json.title, category: $json.category, price_excl_tax: num(v[2]), price_incl_tax: num(v[3]), tax: num(v[4]), price_list: num($json.price_text), availability: avail, quantity: m ? parseInt(m[1], 10) : 0, num_reviews: parseInt(v[6], 10), description: $json.description || null, url: $('Absolute URL').item.json.url, source: 'n8n' } };"
+      }
+    },
+    {
+      "id": "f463175d-4abd-4a6c-924b-5a245d05c2fe",
+      "name": "Remove Duplicates",
+      "type": "n8n-nodes-base.removeDuplicates",
+      "typeVersion": 2,
+      "position": [2240, 0],
+      "parameters": {
+        "compare": "selectedFields",
+        "fieldsToCompare": "upc",
+        "options": {}
+      }
+    },
+    {
+      "id": "4d3b02d0-42a6-4179-ba13-e8db54fd7209",
+      "name": "Export CSV",
+      "type": "n8n-nodes-base.convertToFile",
+      "typeVersion": 1.1,
+      "position": [2464, 0],
+      "parameters": {
+        "operation": "csv",
+        "binaryPropertyName": "data",
+        "options": {
+          "fileName": "nocode_result.csv",
+          "headerRow": true
+        }
+      }
+    },
+    {
+      "id": "5a4371af-8ffe-4b40-8e2e-0c122105c9b5",
+      "name": "Fetch Book Card",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [1792, 192],
+      "parameters": {
+        "url": "={{ $json.url }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "User-Agent",
+              "value": "StudentScraperBot/1.0 (+https://github.com/PINNOS/parsing)"
+            }
+          ]
+        },
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "text"
+            }
+          },
+          "timeout": 30000
+        }
+      },
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 2000,
+      "onError": "continueErrorOutput"
+    },
+    {
+      "id": "b9894daf-0983-46e3-85c4-3d61f0d1bf3e",
+      "name": "Pause Between Requests",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [2016, 224],
+      "parameters": {
+        "resume": "timeInterval",
+        "amount": 1,
+        "unit": "seconds"
+      },
+      "webhookId": "6ce2e19f-95fe-4b61-b056-b0251d7d6f32"
+    },
+    {
+      "id": "55d0c7e4-d709-4948-b11f-1d8256590fd2",
+      "name": "Loop Books",
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [1568, 176],
+      "parameters": {
+        "batchSize": 1
+      }
+    },
+    {
+      "id": "5ffca11f-d29c-4612-807b-5092fe4f9b06",
+      "name": "Fetch List Page",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [672, 368],
+      "parameters": {
+        "url": "={{ $json.url }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "User-Agent",
+              "value": "StudentScraperBot/1.0 (+https://github.com/PINNOS/parsing)"
+            }
+          ]
+        },
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "text"
+            }
+          },
+          "timeout": 30000
+        }
+      },
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 2000
+    },
+    {
+      "id": "7166d3f0-bab6-4ca0-bd75-b4b35d2d6e47",
+      "name": "Loop Pages",
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [448, 320],
+      "parameters": {
+        "batchSize": 1
+      }
+    },
+    {
+      "id": "32a51d95-1e9a-4b68-97d1-7f1bdbc7c5dc",
+      "name": "Error Notice",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [2400, 600],
+      "parameters": {
+        "mode": "manual",
+        "includeOtherFields": false,
+        "assignments": {
+          "assignments": [
+            {
+              "id": "e1",
+              "name": "error",
+              "value": "={{ $json.error ? $json.error.message : \"fetch failed\" }}",
+              "type": "string"
+            },
+            {
+              "id": "e2",
+              "name": "stage",
+              "value": "Fetch Book Card",
+              "type": "string"
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Daily Schedule": {
+      "main": [
+        [
+          {
+            "node": "Build Page URLs",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build Page URLs": {
+      "main": [
+        [
+          {
+            "node": "Loop Pages",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Manual Start": {
+      "main": [
+        [
+          {
+            "node": "Build Page URLs",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract Book Links": {
+      "main": [
+        [
+          {
+            "node": "Split Book Links",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Book Links": {
+      "main": [
+        [
+          {
+            "node": "Absolute URL",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Absolute URL": {
+      "main": [
+        [
+          {
+            "node": "Limit 30 Books",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Limit 30 Books": {
+      "main": [
+        [
+          {
+            "node": "Loop Books",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract Book Fields": {
+      "main": [
+        [
+          {
+            "node": "Normalize Book",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Normalize Book": {
+      "main": [
+        [
+          {
+            "node": "Remove Duplicates",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Remove Duplicates": {
+      "main": [
+        [
+          {
+            "node": "Export CSV",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch Book Card": {
+      "main": [
+        [
+          {
+            "node": "Pause Between Requests",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Error Notice",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Pause Between Requests": {
+      "main": [
+        [
+          {
+            "node": "Loop Books",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Books": {
+      "main": [
+        [
+          {
+            "node": "Extract Book Fields",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Fetch Book Card",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch List Page": {
+      "main": [
+        [
+          {
+            "node": "Loop Pages",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Pages": {
+      "main": [
+        [
+          {
+            "node": "Extract Book Links",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Fetch List Page",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Error Notice": {
+      "main": [
+        [
+          {
+            "node": "Pause Between Requests",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "availableInMCP": true
+  }
+}

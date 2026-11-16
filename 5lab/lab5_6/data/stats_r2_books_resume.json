@@ -1,0 +1,32 @@
+{
+  "run_id": "r2_books_resume",
+  "spider": "books",
+  "reason": "closespider_itemcount",
+  "elapsed_s": 136.68,
+  "stats": {
+    "start_time": "2026-10-19T11:39:23.707361+00:00",
+    "log_count/INFO": 6,
+    "scheduler/enqueued/disk": 798,
+    "scheduler/enqueued": 798,
+    "scheduler/dequeued/disk": 396,
+    "scheduler/dequeued": 396,
+    "downloader/request_count": 397,
+    "downloader/request_method_count/GET": 397,
+    "downloader/request_bytes": 160571,
+    "downloader/response_count": 397,
+    "downloader/response_status_count/404": 1,
+    "downloader/response_bytes": 1589779,
+    "httpcompression/response_bytes": 8883541,
+    "httpcompression/response_count": 397,
+    "log_count/DEBUG": 1152,
+    "response_received_count": 397,
+    "robotstxt/response_count": 1,
+    "robotstxt/response_status_count/404": 1,
+    "robotstxt/request_count": 1,
+    "downloader/response_status_count/200": 396,
+    "request_depth_max": 50,
+    "item_scraped_count": 358,
+    "stored/rows": 358,
+    "stored/flushes": 4
+  }
+}

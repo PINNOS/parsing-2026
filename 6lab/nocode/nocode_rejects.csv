@@ -1,0 +1,3 @@
+product_key,source,reason,seen_at
+bad_1,jsonplaceholder.comments,нарушение обязательного поля или правила (title/product_key/price),2026-10-19 17:02:51.632+00
+bad_2,jsonplaceholder.comments,нарушение обязательного поля или правила (title/product_key/price),2026-10-19 17:02:51.635+00

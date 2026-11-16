@@ -1,0 +1,378 @@
+{
+  "name": "lab4_v6_scrapingcourse_button_click",
+  "nodes": [
+    {
+      "parameters": {
+        "inputSource": "passthrough"
+      },
+      "id": "n4-manual",
+      "name": "Manual Trigger",
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        240,
+        120
+      ]
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "hours",
+              "hoursInterval": 24
+            }
+          ]
+        }
+      },
+      "id": "n4-trigger",
+      "name": "Schedule Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        240,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "return Array.from({ length: 15 }, (_, i) => ({ json: { offset: i * 10 } }));"
+      },
+      "id": "n4-offsets",
+      "name": "Offsets",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        440,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "url": "https://www.scrapingcourse.com/ajax/products",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "offset",
+              "value": "={{ $json.offset }}"
+            }
+          ]
+        },
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "text"
+            }
+          },
+          "batching": {
+            "batch": {
+              "batchSize": 1,
+              "batchInterval": 1000
+            }
+          },
+          "timeout": 15000,
+          "userAgent": "StudentScraperBot/1.0 (+https://github.com/PINNOS/parsing)"
+        }
+      },
+      "id": "n4-http",
+      "name": "HTTP Request",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        640,
+        300
+      ],
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 1000,
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "operation": "extractHtmlContent",
+        "sourceData": "json",
+        "dataPropertyName": "data",
+        "extractionValues": {
+          "values": [
+            {
+              "key": "card",
+              "cssSelector": ".product-item",
+              "returnValue": "html",
+              "returnArray": true
+            }
+          ]
+        }
+      },
+      "id": "n4-cards",
+      "name": "Extract Cards",
+      "type": "n8n-nodes-base.htmlExtract",
+      "typeVersion": 1.2,
+      "position": [
+        840,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "card",
+        "options": {}
+      },
+      "id": "n4-split",
+      "name": "Split Out",
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        1040,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "extractHtmlContent",
+        "sourceData": "json",
+        "dataPropertyName": "card",
+        "extractionValues": {
+          "values": [
+            {
+              "key": "name",
+              "cssSelector": ".product-name",
+              "returnValue": "text"
+            },
+            {
+              "key": "price_raw",
+              "cssSelector": ".product-price",
+              "returnValue": "text"
+            },
+            {
+              "key": "url",
+              "cssSelector": "a",
+              "returnValue": "attribute",
+              "attribute": "href"
+            },
+            {
+              "key": "image_url",
+              "cssSelector": "img",
+              "returnValue": "attribute",
+              "attribute": "src"
+            }
+          ]
+        }
+      },
+      "id": "n4-fields",
+      "name": "Extract Fields",
+      "type": "n8n-nodes-base.htmlExtract",
+      "typeVersion": 1.2,
+      "position": [
+        1240,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "return $input.all().map(item => {\n  const r = item.json;\n  return { json: {\n    name: String(r.name || '').split(/\\s+/).join(' ').trim(),\n    price: Number(String(r.price_raw || '').replace(/[^\\d.]/g, '')) || null,\n    price_raw: r.price_raw || null,\n    url: r.url || null,\n    image_url: r.image_url || null,\n    source: 'load_more',\n    method: 'no-code-xhr',\n    collected_at: new Date().toISOString()\n  } };\n});"
+      },
+      "id": "n4-normalize",
+      "name": "Normalize",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1440,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const seen = new Set();\nreturn $input.all().filter(item => {\n  const key = String(item.json.name || '').toLowerCase().replace(/[^a-z0-9]/g, '');\n  if (!key || seen.has(key)) return false;\n  seen.add(key);\n  return true;\n});"
+      },
+      "id": "n4-dedupe",
+      "name": "Dedupe By Business Key",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1640,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const rows = $input.all().map(i => i.json);\nconst cols = ['name','price','price_raw','url','image_url','source','method','collected_at'];\nconst esc = v => { const s = v === null || v === undefined ? '' : String(v); return /[\",\\n]/.test(s) ? '\"' + s.replace(/\"/g, '\"\"') + '\"' : s; };\nconst csv = [cols.join(','), ...rows.map(r => cols.map(c => esc(r[c])).join(','))].join('\\n');\nconst binary = await this.helpers.prepareBinaryData(Buffer.from('\\uFEFF' + csv, 'utf8'), 'nocode_result.csv', 'text/csv');\nreturn [{ json: { rows: rows.length }, binary: { data: binary } }];"
+      },
+      "id": "n4-csv",
+      "name": "Build CSV",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1840,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "write",
+        "fileName": "/home/node/.n8n-files/nocode_result.csv",
+        "dataPropertyName": "data",
+        "options": {}
+      },
+      "id": "n4-write",
+      "name": "Write CSV",
+      "type": "n8n-nodes-base.readWriteFile",
+      "typeVersion": 1,
+      "position": [
+        2040,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "e1",
+              "name": "error",
+              "value": "={{ $json.error ? $json.error.message : 'http_error' }}",
+              "type": "string"
+            },
+            {
+              "id": "e2",
+              "name": "failed_at",
+              "value": "={{ $now.toISO() }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "n4-error",
+      "name": "Error Branch",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        840,
+        500
+      ]
+    }
+  ],
+  "connections": {
+    "Manual Trigger": {
+      "main": [
+        [
+          {
+            "node": "Offsets",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Offsets",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Offsets": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Extract Cards",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Error Branch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract Cards": {
+      "main": [
+        [
+          {
+            "node": "Split Out",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out": {
+      "main": [
+        [
+          {
+            "node": "Extract Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract Fields": {
+      "main": [
+        [
+          {
+            "node": "Normalize",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Normalize": {
+      "main": [
+        [
+          {
+            "node": "Dedupe By Business Key",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Dedupe By Business Key": {
+      "main": [
+        [
+          {
+            "node": "Build CSV",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build CSV": {
+      "main": [
+        [
+          {
+            "node": "Write CSV",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  }
+}

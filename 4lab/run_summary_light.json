@@ -1,0 +1,25 @@
+{
+  "mode": "light",
+  "run_id": "9d7226bc",
+  "records_unique": 227,
+  "records_raw": 255,
+  "by_source": {
+    "load_more": 147,
+    "books": 80
+  },
+  "requests": 20,
+  "retries": 0,
+  "traffic_mb": 0.338,
+  "elapsed_s": 25.17,
+  "sec_per_record": 0.1109,
+  "peak_rss_mb": 44.2,
+  "reconcile": {
+    "matched_by_business_key": 227,
+    "only_browser": 0,
+    "only_light": 0,
+    "name_mismatch": 0,
+    "price_mismatch_numeric": 0,
+    "url_mismatch": 0
+  },
+  "exit_code": 0
+}
