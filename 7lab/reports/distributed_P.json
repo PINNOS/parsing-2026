@@ -1,0 +1,57 @@
+{
+  "run_id": "P",
+  "profile": "B",
+  "workers": 4,
+  "mode": "один воркер на домен",
+  "pinning": true,
+  "assignment": [
+    {
+      "worker": 0,
+      "host": "books.toscrape.com"
+    },
+    {
+      "worker": 1,
+      "host": "quotes.toscrape.com"
+    },
+    {
+      "worker": 2,
+      "host": "scrapingcourse.com"
+    }
+  ],
+  "duration_s": 10.4,
+  "achieved_rates": {
+    "books.toscrape.com": {
+      "requests": 5,
+      "span_s": 8.35,
+      "avg_interval_s": 2.088,
+      "achieved_rate": 0.479
+    },
+    "quotes.toscrape.com": {
+      "requests": 5,
+      "span_s": 7.6,
+      "avg_interval_s": 1.901,
+      "achieved_rate": 0.526
+    },
+    "scrapingcourse.com": {
+      "requests": 5,
+      "span_s": 4.16,
+      "avg_interval_s": 1.04,
+      "achieved_rate": 0.961
+    }
+  },
+  "declared_limits": {
+    "books.toscrape.com": 0.5,
+    "quotes.toscrape.com": 0.5,
+    "scrapingcourse.com": 1.0,
+    "127.0.0.1:8765": 2.0
+  },
+  "tolerance_pct": 5.0,
+  "limit_violations": {
+    "quotes.toscrape.com": {
+      "achieved_rate": 0.526,
+      "limit": 0.5,
+      "over_pct": 5.2
+    }
+  },
+  "within_limits": false
+}

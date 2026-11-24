@@ -1,0 +1,125 @@
+{
+  "metrics": {
+    "requests": 0,
+    "hosts": 0,
+    "status_counts": {},
+    "error_rate_pct": 0.0,
+    "rate_limited_pct": 0.0,
+    "retries": 0,
+    "latency_median_ms": 0,
+    "latency_p95_ms": 0,
+    "traffic_bytes": 0,
+    "cached_304": 0,
+    "breaker_activations": 0,
+    "dropped_pct": 0.0,
+    "collected": 0,
+    "dropped": 0,
+    "duration_s": 0.49,
+    "profile": "C",
+    "records_total": 0,
+    "reused_from_304": 0,
+    "suspicious_responses": 0,
+    "skipped_by_watermark": 21,
+    "skipped_by_breaker": 0,
+    "incidents": 0,
+    "block_incidents": 0,
+    "avg_response_bytes": 0.0,
+    "avg_page_bytes": null,
+    "content_pages": 0,
+    "error_rate_content_domains_pct": null,
+    "limits": {
+      "books.toscrape.com": {
+        "rate": 0.5,
+        "burst": 1,
+        "jitter": 0.25
+      },
+      "quotes.toscrape.com": {
+        "rate": 0.5,
+        "burst": 1,
+        "jitter": 0.25
+      },
+      "scrapingcourse.com": {
+        "rate": 1.0,
+        "burst": 1,
+        "jitter": 0.2
+      },
+      "127.0.0.1:8765": {
+        "rate": 2.0,
+        "burst": 2,
+        "jitter": 0.2
+      }
+    },
+    "domains_configured": 4,
+    "distributed_mode": "один процесс",
+    "achieved_rate_per_host": {},
+    "history_runs": 4,
+    "history_comparison": false,
+    "median_records": 210,
+    "median_avg_page_bytes": 24247.9,
+    "records_vs_median_pct": null,
+    "avg_size_vs_median_pct": null,
+    "run_id": "Cinc",
+    "report": "run_report_C_incr.json",
+    "exit_code": 0
+  },
+  "alerts": [],
+  "status": "зелёный",
+  "thresholds": [
+    {
+      "metric": "error_rate_pct",
+      "op": ">",
+      "limit": 5.0,
+      "level": "warn",
+      "why": "выше 5% ошибок прогон перестаёт быть воспроизводимым: результат зависит от удачи, а не от логики сборщика"
+    },
+    {
+      "metric": "rate_limited_pct",
+      "op": ">",
+      "limit": 1.0,
+      "level": "warn",
+      "why": "429/403 означают, что заявленная скорость выше допустимой для домена; сигнал снизить лимит до исчезновения ответов"
+    },
+    {
+      "metric": "latency_p95_ms",
+      "op": ">",
+      "limit": 3000.0,
+      "level": "warn",
+      "why": "p95 выше 3 с означает перегрузку источника; токен-бакет обязан отступить через адаптивную задержку"
+    },
+    {
+      "metric": "breaker_activations",
+      "op": ">=",
+      "limit": 1,
+      "level": "warn",
+      "why": "срабатывание предохранителя — инцидент: домен изолирован, нужен разбор причин"
+    },
+    {
+      "metric": "dropped_pct",
+      "op": ">",
+      "limit": 10.0,
+      "level": "warn",
+      "why": "более 10% отброшенных записей чаще всего означают поломку селекторов или смену вёрстки"
+    },
+    {
+      "metric": "block_incidents",
+      "op": ">=",
+      "limit": 1,
+      "level": "critical",
+      "why": "вердикт «блокировка» — остановка домена и ненулевой код возврата: сбор прекращается до разбора причин"
+    },
+    {
+      "metric": "records_vs_median_pct",
+      "op": "<",
+      "limit": 80.0,
+      "level": "critical",
+      "why": "падение объёма ниже 80% медианы прошлых прогонов — признак «тихой» деградации сбора или поломки селекторов"
+    },
+    {
+      "metric": "avg_size_vs_median_pct",
+      "op": "<",
+      "limit": 70.0,
+      "level": "critical",
+      "why": "средний размер ответа ниже 70% медианы истории — вероятна заглушка или урезанная страница при коде 200"
+    }
+  ]
+}

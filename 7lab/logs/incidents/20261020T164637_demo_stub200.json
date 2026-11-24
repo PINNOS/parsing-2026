@@ -1,0 +1,18 @@
+{
+  "saved_at": "2026-10-20T16:46:37+00:00",
+  "url": "http://127.0.0.1:8765/stub200",
+  "status": 200,
+  "headers": {
+    "Server": "BaseHTTP/0.6 Python/3.11.0",
+    "Date": "Tue, 20 Oct 2026 16:46:37 GMT",
+    "Content-Type": "text/html; charset=utf-8",
+    "Content-Length": "130"
+  },
+  "bytes": 130,
+  "verdict": "блокировка",
+  "signals": [
+    "маркеры: access denied, captcha, unusual traffic",
+    "аномально малый ответ: 130 байт < 1000"
+  ],
+  "stage": "демонстрация в блокноте"
+}
