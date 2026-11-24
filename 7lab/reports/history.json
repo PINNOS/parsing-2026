@@ -1,0 +1,38 @@
+[
+  {
+    "run": "A",
+    "profile": "A",
+    "records": 210,
+    "avg_page_bytes": 24247.9,
+    "pages": 15,
+    "status": "жёлтый",
+    "duration_s": 5.62
+  },
+  {
+    "run": "B",
+    "profile": "B",
+    "records": 210,
+    "avg_page_bytes": 24247.9,
+    "pages": 15,
+    "status": "жёлтый",
+    "duration_s": 46.93
+  },
+  {
+    "run": "C1",
+    "profile": "C",
+    "records": 210,
+    "avg_page_bytes": 24247.9,
+    "pages": 15,
+    "status": "жёлтый",
+    "duration_s": 47.04
+  },
+  {
+    "run": "C2",
+    "profile": "C",
+    "records": 210,
+    "avg_page_bytes": 10664.5,
+    "pages": 10,
+    "status": "жёлтый",
+    "duration_s": 46.38
+  }
+]

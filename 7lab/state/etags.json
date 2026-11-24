@@ -1,0 +1,37 @@
+{
+  "http://127.0.0.1:8765/flaky": {
+    "etag": "\"flaky-v1\"",
+    "last_modified": null,
+    "checked_at": "2026-10-20T16:47:40+00:00"
+  },
+  "https://books.toscrape.com/catalogue/page-1.html": {
+    "etag": "\"63e40de8-c525\"",
+    "last_modified": "Wed, 08 Feb 2023 21:02:32 GMT",
+    "checked_at": "2026-10-20T16:47:59+00:00"
+  },
+  "https://books.toscrape.com/catalogue/page-2.html": {
+    "etag": "\"63e40de8-c6bd\"",
+    "last_modified": "Wed, 08 Feb 2023 21:02:32 GMT",
+    "checked_at": "2026-10-20T16:48:01+00:00"
+  },
+  "https://books.toscrape.com/catalogue/page-3.html": {
+    "etag": "\"63e40de8-c8ae\"",
+    "last_modified": "Wed, 08 Feb 2023 21:02:32 GMT",
+    "checked_at": "2026-10-20T16:48:04+00:00"
+  },
+  "https://books.toscrape.com/catalogue/page-4.html": {
+    "etag": "\"63e40de8-cd2c\"",
+    "last_modified": "Wed, 08 Feb 2023 21:02:32 GMT",
+    "checked_at": "2026-10-20T16:48:05+00:00"
+  },
+  "https://books.toscrape.com/catalogue/page-5.html": {
+    "etag": "\"63e40de8-ca75\"",
+    "last_modified": "Wed, 08 Feb 2023 21:02:32 GMT",
+    "checked_at": "2026-10-20T16:48:07+00:00"
+  },
+  "http://127.0.0.1:8765/ok": {
+    "etag": "\"ok-v1\"",
+    "last_modified": null,
+    "checked_at": "2026-10-20T16:48:22+00:00"
+  }
+}

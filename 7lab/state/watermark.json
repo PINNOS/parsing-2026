@@ -1,0 +1,94 @@
+{
+  "seen": {
+    "http://127.0.0.1:8765/flaky": {
+      "ts": 1792514908.6023068,
+      "status": 304
+    },
+    "http://127.0.0.1:8765/ratelimit-numeric": {
+      "ts": 1792514915.3525114,
+      "status": 429
+    },
+    "http://127.0.0.1:8765/ratelimit-date": {
+      "ts": 1792514925.0452478,
+      "status": 429
+    },
+    "http://127.0.0.1:8765/unauthorized": {
+      "ts": 1792514926.06777,
+      "status": 401
+    },
+    "http://127.0.0.1:8765/forbidden": {
+      "ts": 1792514989.7068174,
+      "status": 403
+    },
+    "https://books.toscrape.com/catalogue/page-1.html": {
+      "ts": 1792514964.6822088,
+      "status": 200
+    },
+    "https://books.toscrape.com/catalogue/page-2.html": {
+      "ts": 1792514966.8644044,
+      "status": 200
+    },
+    "https://books.toscrape.com/catalogue/page-3.html": {
+      "ts": 1792514969.0889723,
+      "status": 200
+    },
+    "https://books.toscrape.com/catalogue/page-4.html": {
+      "ts": 1792514970.99305,
+      "status": 200
+    },
+    "https://books.toscrape.com/catalogue/page-5.html": {
+      "ts": 1792514972.9685135,
+      "status": 200
+    },
+    "https://quotes.toscrape.com/page/1/": {
+      "ts": 1792514974.4216526,
+      "status": 200
+    },
+    "https://quotes.toscrape.com/page/2/": {
+      "ts": 1792514976.2656481,
+      "status": 200
+    },
+    "https://quotes.toscrape.com/page/3/": {
+      "ts": 1792514977.7371116,
+      "status": 200
+    },
+    "https://quotes.toscrape.com/page/4/": {
+      "ts": 1792514979.6041899,
+      "status": 200
+    },
+    "https://quotes.toscrape.com/page/5/": {
+      "ts": 1792514981.5441232,
+      "status": 200
+    },
+    "https://scrapingcourse.com/ajax/products?offset=0": {
+      "ts": 1792514982.8264816,
+      "status": 200
+    },
+    "https://scrapingcourse.com/ajax/products?offset=10": {
+      "ts": 1792514983.9763424,
+      "status": 200
+    },
+    "https://scrapingcourse.com/ajax/products?offset=20": {
+      "ts": 1792514985.0141103,
+      "status": 200
+    },
+    "https://scrapingcourse.com/ajax/products?offset=30": {
+      "ts": 1792514985.9797294,
+      "status": 200
+    },
+    "https://scrapingcourse.com/ajax/products?offset=40": {
+      "ts": 1792514987.0312955,
+      "status": 200
+    },
+    "http://127.0.0.1:8765/ok": {
+      "ts": 1792514949.9833157,
+      "status": 304
+    },
+    "http://127.0.0.1:8765/stub200": {
+      "ts": 1792514988.455542,
+      "status": 200
+    }
+  },
+  "runs": 9,
+  "updated_at": "2026-10-20T16:49:49+00:00"
+}

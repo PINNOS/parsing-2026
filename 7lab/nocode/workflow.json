@@ -1,0 +1,165 @@
+{
+  "name": "lab7-polite-multidomain",
+  "nodes": [
+    {
+      "parameters": { "rule": { "interval": [{ "field": "days", "daysInterval": 1, "triggerAtHour": 6 }] } },
+      "id": "n1",
+      "name": "Расписание (ежедневно 06:00)",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [0, 300]
+    },
+    {
+      "parameters": {},
+      "id": "n15",
+      "name": "Ручной запуск (тест)",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [0, 520]
+    },
+    {
+      "parameters": {
+        "jsCode": "const plan = [];\nconst sources = [\n  { domain: 'books.toscrape.com', wait_ms: 2000, pages: 5, url: n => `https://books.toscrape.com/catalogue/page-${n}.html` },\n  { domain: 'quotes.toscrape.com', wait_ms: 2000, pages: 5, url: n => `https://quotes.toscrape.com/page/${n}/` },\n  { domain: 'scrapingcourse.com', wait_ms: 1000, pages: 5, url: n => `https://scrapingcourse.com/ajax/products?offset=${(n - 1) * 10}` }\n];\nfor (const s of sources) {\n  for (let p = 1; p <= s.pages; p++) {\n    plan.push({ json: { domain: s.domain, url: s.url(p), wait_ms: s.wait_ms } });\n  }\n}\nreturn plan;"
+      },
+      "id": "n2",
+      "name": "План сбора (15 страниц)",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [220, 300]
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.url }}",
+        "options": {
+          "response": { "response": { "responseFormat": "text" } },
+          "redirect": { "redirect": { "followRedirects": true } },
+          "timeout": 20000,
+          "batching": { "batch": { "batchSize": 1, "batchInterval": 2000 } }
+        },
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [{ "name": "User-Agent", "value": "StudentScraperBot/1.0 (+https://github.com/PINNOS/parsing)" }]
+        }
+      },
+      "id": "n6",
+      "name": "Запрос страницы (пауза 2 с, повторы 429/5xx)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [440, 300],
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 2000
+    },
+    {
+      "parameters": {
+        "jsCode": "const plan = $('План сбора (15 страниц)').all();\nconst out = [];\nfor (const item of $input.all()) {\n  const idx = (item.pairedItem && typeof item.pairedItem.item === 'number') ? item.pairedItem.item : out.length;\n  const src = (plan[idx] && plan[idx].json) ? plan[idx].json : {};\n  const body = String(item.json.data || item.json.body || '');\n  const count = (body.match(/class=\"[^\"]*\\b(product_pod|quote|product-item)\\b/g) || []).length;\n  out.push({ json: {\n    domain: src.domain || null,\n    url: src.url || null,\n    status: (item.json.statusCode !== undefined ? item.json.statusCode : 200),\n    items: count,\n    collected_at: new Date().toISOString()\n  } });\n}\nreturn out;"
+      },
+      "id": "n7",
+      "name": "Разбор записей",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [660, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "const rows = $input.all().map(i => i.json).filter(r => r && r.url);\nconst text = rows.map(r => JSON.stringify(r)).join('\\n') + '\\n';\nreturn [{ json: {\n  written: rows.length,\n  records: rows.reduce((s, r) => s + (r.items || 0), 0),\n  pages: rows.length,\n  domains: [...new Set(rows.map(r => r.domain))],\n  file: 'nocode_result.jsonl'\n}, binary: { data: { data: Buffer.from(text, 'utf8').toString('base64'), mimeType: 'application/x-ndjson', fileName: 'nocode_result.jsonl' } } }];"
+      },
+      "id": "n13",
+      "name": "Собрать результат в JSONL",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [880, 300]
+    },
+    {
+      "parameters": {
+        "operation": "toFile",
+        "fileName": "/data/nocode/nocode_result.jsonl",
+        "options": { "append": true }
+      },
+      "id": "n12",
+      "name": "Результат (JSONL)",
+      "type": "n8n-nodes-base.writeBinaryFile",
+      "typeVersion": 1,
+      "position": [1100, 300]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": { "caseSensitive": true, "leftValue": "", "typeValidation": "loose" },
+          "conditions": [
+            { "id": "c2", "leftValue": "={{ $json.records }}", "rightValue": 30, "operator": { "type": "number", "operation": "lt" } }
+          ],
+          "combinator": "and"
+        }
+      },
+      "id": "n11",
+      "name": "Проверка: записей меньше 30",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [1320, 160]
+    },
+    {
+      "parameters": {
+        "jsCode": "const s = $json;\nconst text = JSON.stringify({ event: 'insufficient_records', records: s.records, pages: s.pages, domains: s.domains, at: new Date().toISOString() }) + '\\n';\nreturn [{ json: { written: 1, file: 'nocode_alerts.jsonl' }, binary: { data: { data: Buffer.from(text, 'utf8').toString('base64'), mimeType: 'application/x-ndjson', fileName: 'nocode_alerts.jsonl' } } }];"
+      },
+      "id": "n14",
+      "name": "Собрать алерт в JSONL",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1540, 460]
+    },
+    {
+      "parameters": {
+        "jsCode": "const rows = $input.all().map(i => i.json).filter(r => r && r.status && r.status !== 200);\nconst text = rows.map(r => JSON.stringify({ event: 'non_200_status', domain: r.domain, url: r.url, status: r.status, at: new Date().toISOString() })).join('\\n');\nif (!rows.length) { return []; }\nreturn [{ json: { written: rows.length, file: 'nocode_alerts.jsonl' }, binary: { data: { data: Buffer.from(text + '\\n', 'utf8').toString('base64'), mimeType: 'application/x-ndjson', fileName: 'nocode_alerts.jsonl' } } }];"
+      },
+      "id": "n16",
+      "name": "Собрать инциденты в JSONL",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [880, 460]
+    },
+    {
+      "parameters": {
+        "operation": "toFile",
+        "fileName": "/data/nocode/nocode_alerts.jsonl",
+        "options": { "append": true }
+      },
+      "id": "n9",
+      "name": "Журнал ошибок (JSONL)",
+      "type": "n8n-nodes-base.writeBinaryFile",
+      "typeVersion": 1,
+      "position": [1760, 460]
+    },
+    {
+      "parameters": {
+        "operation": "toFile",
+        "fileName": "/data/nocode/nocode_alerts_incidents.jsonl",
+        "options": { "append": true }
+      },
+      "id": "n17",
+      "name": "Журнал инцидентов (JSONL)",
+      "type": "n8n-nodes-base.writeBinaryFile",
+      "typeVersion": 1,
+      "position": [1100, 460]
+    }
+  ],
+  "connections": {
+    "Расписание (ежедневно 06:00)": { "main": [[{ "node": "План сбора (15 страниц)", "type": "main", "index": 0 }]] },
+    "Ручной запуск (тест)": { "main": [[{ "node": "План сбора (15 страниц)", "type": "main", "index": 0 }]] },
+    "План сбора (15 страниц)": { "main": [[{ "node": "Запрос страницы (пауза 2 с, повторы 429/5xx)", "type": "main", "index": 0 }]] },
+    "Запрос страницы (пауза 2 с, повторы 429/5xx)": { "main": [[{ "node": "Разбор записей", "type": "main", "index": 0 }]] },
+    "Разбор записей": { "main": [[
+      { "node": "Собрать результат в JSONL", "type": "main", "index": 0 },
+      { "node": "Собрать инциденты в JSONL", "type": "main", "index": 0 }
+    ]] },
+    "Собрать результат в JSONL": { "main": [[{ "node": "Результат (JSONL)", "type": "main", "index": 0 }]] },
+    "Результат (JSONL)": { "main": [[{ "node": "Проверка: записей меньше 30", "type": "main", "index": 0 }]] },
+    "Проверка: записей меньше 30": { "main": [
+      [{ "node": "Собрать алерт в JSONL", "type": "main", "index": 0 }],
+      []
+    ] },
+    "Собрать алерт в JSONL": { "main": [[{ "node": "Журнал ошибок (JSONL)", "type": "main", "index": 0 }]] },
+    "Собрать инциденты в JSONL": { "main": [[{ "node": "Журнал инцидентов (JSONL)", "type": "main", "index": 0 }]] }
+  },
+  "settings": { "executionOrder": "v1", "timezone": "UTC" }
+}
